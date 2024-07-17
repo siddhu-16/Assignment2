@@ -1,37 +1,42 @@
 import { Fields } from "./data";
-let fieldList = new Array();
-const dataIndex = new Array();
-// Question2
-Array.prototype.push.apply(fieldList, Fields.Dimensions);
-Array.prototype.push.apply(fieldList, Fields.Details);
-Array.prototype.push.apply(fieldList, Fields.Hierarchies);
-Array.prototype.push.apply(fieldList, Fields.Measures);
+let fieldList ;
+let dataIndex: any[] = [] ;
 
-// console.log(fieldList); 
 
-// Question3
+fieldList = [...Fields.Details,...Fields.Dimensions,...Fields.Hierarchies,...Fields.Measures]
+
+// console.log(fieldList.length); 
+
+
 const calculatedfields = fieldList.filter(value => {
-    if(value.calculatedFieldKey){
-        return value.calculatedFieldKey;
+    
+    if(value.calculatedFieldKey != undefined){
+        return value.calculatedFieldKey
     }
+    
 })
 // console.log(calculatedfields)
 
 
-// Question4
-const pos = fieldList.map(target => target.entityName).indexOf('Discount');
- console.log(pos)
 
-fieldList = fieldList.filter(val=> {
-    return val.entityName !== 'Discount';
-});
+    const pos = fieldList.findIndex(
+        target => target.entityName === 'Discount'
+    )
+    // console.log(pos)
+
+
+// fieldList = fieldList.filter(val=> {
+//     return val.entityName !== 'Discount';
+// });
+
+fieldList.splice(pos,1)
+
 // console.log(fieldList);
 
 
-// Question5
-function que5(){
+function question5(){
 
-    fieldList = fieldList.filter(val => {
+   fieldList.forEach(val => {
 
         if(val.entityName == 'City'){
            
@@ -39,46 +44,90 @@ function que5(){
             val.dataType = 'numerical';
     
         }
-        return val;
+        
     })
     // console.log(fieldList)
 }
-que5();
+question5();
 
 
-// Question7
 
-function que7(){
+function question6(){
+    let array = new Array();
+    for (let index = 0; index < calculatedfields.length; index++) {
+        
+        array.push(...calculatedfields[index].variables)
+    }
+    let finalArray = new Array();
+    array.map((x)=>{
+        if(x.variableType == 'numerical'){
+            finalArray.push(x)
+    }
+    })
+//  console.log(finalArray)
+}
+
+question6();
+
+
+function question7(){
    
     Fields.Dimensions.forEach((obj, index) => {
         if (obj.Parent == 'Order Date') {
             dataIndex.push(index);
+            // console.log(typeof(index))
         }
     });
 
     // console.log(dataIndex);
 }
-que7();
+question7();
 
-function que8(){
+function question8(){
 
     Fields.Dimensions.forEach((obj, index) => {
         if (dataIndex.indexOf(index) !== -1) {
-            console.log(obj.entityName);
+            // console.log(obj.entityName);
         }
     });
 
 }
-que8();
+question8();
+
+function question9(){
+     Fields.Measures.forEach((x)=>{
+        let key:string = 'datasetKey';
+        let val = x.datasetId;
+        x[key] = val
+    })
+    // console.log(Fields.Measures)
+}
+
+question9()
 
 
-function que9(){
-    fieldList.filter(val => {
+function question10(){
+    fieldList.forEach(val => {
         if(val.variableType === 'geographical'){
            return val.mappingDetails.unMappedLocationCount = 5
         }
     });
     // console.log(fieldList)
 }
-que9();
+question10();
 
+function question11(){
+    let NumericalItems = new Array();
+    fieldList.forEach((x)=>{
+        if(x.isNumericDataType == true && x.dataType == 'float'){
+            let val = x.subDatasetId ;
+            x.subDatasetId = x.datasetId;
+            NumericalItems.push(val)
+        }
+    })
+
+    // console.log(NumericalItems);
+    
+}
+
+question11();

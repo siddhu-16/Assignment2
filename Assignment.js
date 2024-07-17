@@ -1,77 +1,101 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
         }
-        return t;
-    };
-    return __assign.apply(this, arguments);
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var data_1 = require("./data");
-var fieldList = new Array();
-var dataIndex = new Array();
-// Question2
-Array.prototype.push.apply(fieldList, data_1.Fields.Dimensions);
-Array.prototype.push.apply(fieldList, data_1.Fields.Details);
-Array.prototype.push.apply(fieldList, data_1.Fields.Hierarchies);
-Array.prototype.push.apply(fieldList, data_1.Fields.Measures);
-// console.log(fieldList); 
-// Question3
+var fieldList;
+var dataIndex = [];
+fieldList = __spreadArray(__spreadArray(__spreadArray(__spreadArray([], data_1.Fields.Details, true), data_1.Fields.Dimensions, true), data_1.Fields.Hierarchies, true), data_1.Fields.Measures, true);
+// console.log(fieldList.length); 
 var calculatedfields = fieldList.filter(function (value) {
-    if (value.calculatedFieldKey) {
+    if (value.calculatedFieldKey != undefined) {
         return value.calculatedFieldKey;
     }
 });
 // console.log(calculatedfields)
-// Question4
-var pos = fieldList.map(function (target) { return target.entityName; }).indexOf('Discount');
-console.log(pos);
-fieldList = fieldList.filter(function (val) {
-    return val.entityName !== 'Discount';
-});
-// console.log(fieldList);
-// Question5
-function que5() {
-    fieldList = fieldList.filter(function (val) {
+var pos = fieldList.findIndex(function (target) { return target.entityName === 'Discount'; });
+// console.log(pos)
+// fieldList = fieldList.filter(val=> {
+//     return val.entityName !== 'Discount';
+// });
+fieldList.splice(pos, 1);
+console.log(fieldList.length);
+function question5() {
+    fieldList.forEach(function (val) {
         if (val.entityName == 'City') {
             val.isNumericDataType = true;
             val.dataType = 'numerical';
         }
-        return val;
     });
     // console.log(fieldList)
 }
-que5();
-// Question7
-function que7() {
+question5();
+function question6() {
+    var array = new Array();
+    for (var index = 0; index < calculatedfields.length; index++) {
+        array.push.apply(array, calculatedfields[index].variables);
+    }
+    var finalArray = new Array();
+    array.map(function (x) {
+        if (x.variableType == 'numerical') {
+            finalArray.push(x);
+        }
+    });
+    //  console.log(finalArray)
+}
+question6();
+function question7() {
     data_1.Fields.Dimensions.forEach(function (obj, index) {
         if (obj.Parent == 'Order Date') {
             dataIndex.push(index);
+            // console.log(typeof(index))
         }
     });
     // console.log(dataIndex);
 }
-que7();
-function que8() {
+question7();
+function question8() {
     data_1.Fields.Dimensions.forEach(function (obj, index) {
         if (dataIndex.indexOf(index) !== -1) {
-            console.log(obj.entityName);
+            // console.log(obj.entityName);
         }
     });
 }
-que8();
-function que9() {
-    fieldList.filter(function (val) {
+question8();
+function question9() {
+    data_1.Fields.Measures.forEach(function (x) {
+        var key = 'datasetKey';
+        var val = x.datasetId;
+        x[key] = val;
+    });
+    // console.log(Fields.Measures)
+}
+question9();
+function question10() {
+    fieldList.forEach(function (val) {
         if (val.variableType === 'geographical') {
             return val.mappingDetails.unMappedLocationCount = 5;
         }
     });
     // console.log(fieldList)
 }
-que9();
-data_1.Fields.Measures.map(function (item) { return (__assign(__assign({}, item), { datasetKey: item.datasetId })); });
-console.log(fieldList);
+question10();
+function question11() {
+    var NumericalItems = new Array();
+    fieldList.forEach(function (x) {
+        if (x.isNumericDataType == true && x.dataType == 'float') {
+            var val = x.subDatasetId;
+            x.subDatasetId = x.datasetId;
+            NumericalItems.push(val);
+        }
+    });
+    console.log(NumericalItems);
+}
+question11();
